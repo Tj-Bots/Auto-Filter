@@ -21,6 +21,10 @@
 - [ ] ℹ️ מדיה אינפו - הצגת פרטים טכניים על קבצים (MediaInfo)!
 
 #
+### ממש קל ונוח לחיפוש:
+![PhotoSearch](https://i.ibb.co/TBQG497b/x.jpg)
+
+#
 # ⚙️ פקודות הבוט
 <details>
 <summary><b>⌨️ פקודות למשתמשים</b></summary>
