@@ -8,7 +8,7 @@ async def jsonify(_, message):
     target_message = message.reply_to_message if message.reply_to_message else message
 
     try:
-        await message.reply_text(f"<code>{target_message}</code>", reply_markup=close_btn, quote=True)
+        await message.reply_text(f"```json\n{target_message}```", reply_markup=close_btn, quote=True)
     except Exception as e:
         try:
             with open("json.txt", "w", encoding="utf-8") as f:
@@ -50,11 +50,9 @@ async def create_file(c, message):
         
         await message.reply_document(
             document=file_name,
-            caption=f"✅ **הקובץ נוצר:** `{file_name}`",
+            caption=f"",
             quote=True
         )
         os.remove(file_name)
     except Exception as e:
         await message.reply(f"❌ שגיאה ביצירת הקובץ:\n`{e}`")
-
-
