@@ -109,7 +109,7 @@ async def mediainfo_handler(client, message):
         link = await create_telegraph_page("MediaInfo Result", final_html, client)
         
         await status.edit(
-            f"{link}",
+            f"**MediaInfo:\n\n➲ Link :** {link}",
             disable_web_page_preview=False
         )
 
