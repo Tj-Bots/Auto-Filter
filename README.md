@@ -21,7 +21,7 @@
 
 #
 ### ממשק קל ונוח לחיפוש:
-![PhotoSearch](https://i.ibb.co/q3K1rCqb/58fc51cfbc1e.jpg)
+![PhotoSearch](https://i.ibb.co/Kjv2y6Vz/de66e9a027bd.jpg)
 #
 # ⚙️ פקודות הבוט
 <details>
