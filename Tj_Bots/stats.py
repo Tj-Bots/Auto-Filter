@@ -1,11 +1,11 @@
-from pyrogram import Client, filters
+from pyrogram import Client, filters, enums
 from pyrogram.types import InlineKeyboardMarkup, InlineKeyboardButton
 from database import db
-from config import ADMINS, PHOTO_URL
+from config import PHOTO_URL
 
-@Client.on_message(filters.command("stats") & filters.user(ADMINS))
+@Client.on_message(filters.command("stats"))
 async def stats_command(client, message):
-    msg = await message.reply("⏳ **אוסף נתונים...**", quote=True)
+    msg = await message.reply("<tg-emoji emoji-id='5451646226975955576'>⌛️</tg-emoji> **מעבד נתונים...**", quote=True)
     
     def get_size(bytes, suffix="B"):
         factor = 1024
@@ -51,7 +51,7 @@ async def stats_command(client, message):
     )
     
     btn = InlineKeyboardMarkup([
-        [InlineKeyboardButton("✘ סגור", callback_data="closea")]
+        [InlineKeyboardButton("✘ סגור", callback_data="closea", style=enums.ButtonStyle.DANGER)]
     ])
     
     await msg.delete()
@@ -61,4 +61,3 @@ async def stats_command(client, message):
         reply_markup=btn,
         quote=True
     )
-    
