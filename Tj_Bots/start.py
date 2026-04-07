@@ -1,3 +1,4 @@
+
 import asyncio
 from pyrogram import Client, filters, enums
 from pyrogram.types import InlineKeyboardMarkup, InlineKeyboardButton, CallbackQuery, InputMediaPhoto
@@ -83,15 +84,15 @@ async def start_command(client, message):
         bot_mention = f"[{bot_name}](https://t.me/{bot_username})"
 
         anim_msg = await message.reply_text(
-             f"<blockquote>**__היי 👋__**\n**__ברוכים הבאים ל- {bot_mention} 😎__**</blockquote>", 
+             f"<blockquote>**__היי <tg-emoji emoji-id='5195448447062251797'>👋</tg-emoji>__**\n**__ברוכים הבאים ל- {bot_mention} <tg-emoji emoji-id='5325559344513691205'>😎</tg-emoji>__**</blockquote>", 
              quote=True
         )        
         await asyncio.sleep(1.0)
         
-        await anim_msg.edit_text("⚡")
+        await anim_msg.edit_text("<tg-emoji emoji-id='5456140674028019486'>⚡️</tg-emoji>")
         await asyncio.sleep(0.8)
 
-        await anim_msg.edit_text("**__מתחיל בוט...__**")
+        await anim_msg.edit_text("**__מתחיל בוט...__** <tg-emoji emoji-id='5929303842205207391'>😈</tg-emoji>")
         await asyncio.sleep(0.7)
         
         await send_home_message(client, message)
@@ -116,19 +117,19 @@ async def send_home_message(client, message, user=None, is_edit=False):
     bot_mention = f"[{bot_name}](https://t.me/{bot_username})"
     
     buttons = [
-        [InlineKeyboardButton("🔍 חיפוש באינליין 🔎", switch_inline_query_current_chat="")],
-        [InlineKeyboardButton('✇ קבוצת בקשות ✇', url=REQUEST_GROUP), 
-         InlineKeyboardButton('✇ ערוץ עדכונים ✇', url=f'https://t.me/{UPDATE_CHANNEL}')],
-        [InlineKeyboardButton('〄 עזרה 〄', callback_data='help'), 
-         InlineKeyboardButton('⍟ אודות ⍟', callback_data='about')],
-        [InlineKeyboardButton('⇋ להוספה לקבוצה ⇋', url=f"http://t.me/{client.me.username}?startgroup&admin=delete_messages")]
+        [InlineKeyboardButton("🔍 חיפוש באינליין 🔎", switch_inline_query_current_chat="", style=enums.ButtonStyle.PRIMARY)],
+        [InlineKeyboardButton('✇ קבוצת בקשות ✇', url=REQUEST_GROUP, style=enums.ButtonStyle.SUCCESS), 
+         InlineKeyboardButton('✇ ערוץ עדכונים ✇', url=f'https://t.me/{UPDATE_CHANNEL}', style=enums.ButtonStyle.SUCCESS)],
+        [InlineKeyboardButton('〄 עזרה 〄', callback_data='help', style=enums.ButtonStyle.PRIMARY), 
+         InlineKeyboardButton('⍟ אודות ⍟', callback_data='about', style=enums.ButtonStyle.PRIMARY)],
+        [InlineKeyboardButton('⇋ להוספה לקבוצה ⇋', url=f"http://t.me/{client.me.username}?startgroup&admin=delete_messages", style=enums.ButtonStyle.SUCCESS)]
     ]
     
-    txt = (f"**היי {user_mention} 👋**\n"
-            f"**ברוכים הבאים ל- {bot_mention}** 😎\n\n"
+    txt = (f"**היי {user_mention} <tg-emoji emoji-id='5195448447062251797'>👋</tg-emoji>**\n"
+            f"**ברוכים הבאים ל- {bot_mention}** <tg-emoji emoji-id='5325559344513691205'>😎</tg-emoji>\n\n"
            "**אני מנוע חיפוש סרטים וסדרות חדשני,**"
            "\n<b>התפקיד שלי זה לחפש סרטים בקבוצות,"
-           "\nהוסיפו אותי לקבוצה שלכם ואני אמשיך מכאן.</b>\n\n"
+           "\nהוסיפו אותי לקבוצה שלכם ואני אמשיך מכאן.</b><tg-emoji emoji-id='5224607267797606837'>☄️</tg-emoji>\n\n"
            "<blockquote>**👨🏼‍💻מתכנת ראשי: @BOSS1480**</blockquote>")
     
     if is_edit:
@@ -188,14 +189,15 @@ async def callback_handler(client, query: CallbackQuery):
         user_mention = query.from_user.mention
         
         btns = [
-            [InlineKeyboardButton('הגדרות קבוצה', callback_data='help_settings'), InlineKeyboardButton('זכויות יוצרים', callback_data='help_copyright')],
-            [InlineKeyboardButton('תוספות (Extra)', callback_data='help_extra'), InlineKeyboardButton('מדריך שימוש', callback_data='help_guide')],
-            [InlineKeyboardButton('הורדה מטיקטוק', callback_data='help_d'),           InlineKeyboardButton('סטטיסטיקות', callback_data='help_stats')],
-            [InlineKeyboardButton('🏠 בית 🏠', callback_data='home')],          
+            [InlineKeyboardButton('הגדרות קבוצה', callback_data='help_settings', style=enums.ButtonStyle.SUCCESS), InlineKeyboardButton('זכויות יוצרים', callback_data='help_copyright', style=enums.ButtonStyle.SUCCESS)],
+            [InlineKeyboardButton('תוספות (Extra)', callback_data='help_extra', style=enums.ButtonStyle.SUCCESS), InlineKeyboardButton('מדריך שימוש', callback_data='help_guide', style=enums.ButtonStyle.SUCCESS)],
+            [InlineKeyboardButton('הורדה מטיקטוק', callback_data='help_d', style=enums.ButtonStyle.SUCCESS),           InlineKeyboardButton('סטטיסטיקות', callback_data='help_stats', style=enums.ButtonStyle.SUCCESS)],
+            [InlineKeyboardButton('🆕 העלאת תמונה', callback_data='help_telegraph', style=enums.ButtonStyle.PRIMARY),           InlineKeyboardButton('🆕 כלים לוידאו', callback_data='help_exthumb', style=enums.ButtonStyle.PRIMARY)],
+            [InlineKeyboardButton('🏠 בית 🏠', callback_data='home', style=enums.ButtonStyle.DANGER)],          
         ]
         
         if user_id in ADMINS:
-             btns.insert(0, [InlineKeyboardButton('👮‍♂️ פקודות מנהל 👮‍♂️', callback_data='help_admin')])
+             btns.insert(0, [InlineKeyboardButton('👮‍♂️ פקודות מנהל 👮‍♂️', callback_data='help_admin', style=enums.ButtonStyle.DANGER)])
 
         await query.message.edit_media(
             InputMediaPhoto(PHOTO_URL, caption=f"<b>היי {user_mention},\nכאן תוכל לקבל עזרה עבור כל הפקודות שלי.</b>"), 
@@ -222,7 +224,7 @@ async def callback_handler(client, query: CallbackQuery):
             "<blockquote>• <code>/json</code> - קבלת המידע הטכני (JSON) של ההודעה.</blockquote>\n"
             "<blockquote>• <code>/written</code> [שם קובץ] - הופך את הטקסט לקובץ טקסט.</blockquote>"
         )
-        await query.message.edit_media(InputMediaPhoto(PHOTO_URL, caption=txt), reply_markup=InlineKeyboardMarkup([[InlineKeyboardButton('חזרה ⋟', callback_data='help')]]))
+        await query.message.edit_media(InputMediaPhoto(PHOTO_URL, caption=txt), reply_markup=InlineKeyboardMarkup([[InlineKeyboardButton('חזרה ⋟', callback_data='help', style=enums.ButtonStyle.PRIMARY)]]))
 
     elif data == "help_admin":
         txt = (
@@ -243,7 +245,7 @@ async def callback_handler(client, query: CallbackQuery):
             "• <code>/broadcast_groups</code> - שידור לקבוצות.\n"
             "• <code>/restart</code> - הפעלה מחדש.</blockquote>"
         )
-        await query.message.edit_media(InputMediaPhoto(PHOTO_URL, caption=txt), reply_markup=InlineKeyboardMarkup([[InlineKeyboardButton('חזרה ⋟', callback_data='help')]]))
+        await query.message.edit_media(InputMediaPhoto(PHOTO_URL, caption=txt), reply_markup=InlineKeyboardMarkup([[InlineKeyboardButton('חזרה ⋟', callback_data='help', style=enums.ButtonStyle.PRIMARY)]]))
 
     elif data == "help_guide":
         txt = (
@@ -266,16 +268,16 @@ async def callback_handler(client, query: CallbackQuery):
             "</blockquote>"
 )
 
-        btn = [[InlineKeyboardButton('למעבר לקבוצה 💬', url=REQUEST_GROUP)], [InlineKeyboardButton('חזרה ⋟', callback_data='help')]]
+        btn = [[InlineKeyboardButton('למעבר לקבוצה 💬', url=REQUEST_GROUP, style=enums.ButtonStyle.SUCCESS)], [InlineKeyboardButton('חזרה ⋟', callback_data='help', style=enums.ButtonStyle.PRIMARY)]]
         await query.message.edit_media(InputMediaPhoto(PHOTO_URL, caption=txt), reply_markup=InlineKeyboardMarkup(btn))
 
     elif data == "help_copyright":
         txt = "<b>© זכויות יוצרים</b>\n\nהקבצים בבוט נאספים מטלגרם באופן אוטומטי. איננו מעלים תוכן בעצמנו."
-        await query.message.edit_media(InputMediaPhoto(PHOTO_URL, caption=txt), reply_markup=InlineKeyboardMarkup([[InlineKeyboardButton('חזרה ⋟', callback_data='help')]]))
+        await query.message.edit_media(InputMediaPhoto(PHOTO_URL, caption=txt), reply_markup=InlineKeyboardMarkup([[InlineKeyboardButton('חזרה ⋟', callback_data='help', style=enums.ButtonStyle.PRIMARY)]]))
     
     elif data == "help_settings":
         txt = "<b>⚙️ הגדרות קבוצה</b>\n\nשלחו <code>/settings</code> בקבוצה כדי להגדיר:\n• מצב תצוגה (כפתורים/טקסט)\n• טריגר חיפוש (!)\n• כמות תוצאות"
-        await query.message.edit_media(InputMediaPhoto(PHOTO_URL, caption=txt), reply_markup=InlineKeyboardMarkup([[InlineKeyboardButton('חזרה ⋟', callback_data='help')]]))
+        await query.message.edit_media(InputMediaPhoto(PHOTO_URL, caption=txt), reply_markup=InlineKeyboardMarkup([[InlineKeyboardButton('חזרה ⋟', callback_data='help', style=enums.ButtonStyle.PRIMARY)]]))
 
     elif data == "help_stats":
         try:
@@ -329,8 +331,8 @@ async def callback_handler(client, query: CallbackQuery):
         await query.message.edit_media(
             InputMediaPhoto(PHOTO_URL, caption=txt), 
             reply_markup=InlineKeyboardMarkup([
-                [InlineKeyboardButton('חזרה ⋟', callback_data='help'),
-                 InlineKeyboardButton('↻ רענן', callback_data='help_stats')]
+                [InlineKeyboardButton('חזרה ⋟', callback_data='help', style=enums.ButtonStyle.PRIMARY),
+                 InlineKeyboardButton('↻ רענן', callback_data='help_stats', style=enums.ButtonStyle.SUCCESS)]
             ])
         )
 
@@ -351,21 +353,31 @@ async def callback_handler(client, query: CallbackQuery):
             "<b>╚══════════════════❍⊱❁۪۪</b></blockquote>"
         )
         btn = [
-            [InlineKeyboardButton('≈ 𝚜𝚘𝚞𝚛𝚌𝚎 𝚌𝚘𝚍𝚎 ≈', url='https://github.com/TJ-Bots/Search-Movies')], 
-            [InlineKeyboardButton('חזרה ⋟', callback_data='home'), InlineKeyboardButton('✘ סגור', callback_data='closea')]
+            [InlineKeyboardButton('🐙 𝚜𝚘𝚞𝚛𝚌𝚎 𝚌𝚘𝚍𝚎 🐙', url='https://github.com/TJ-Bots/Search-Movies', style=enums.ButtonStyle.SUCCESS)], 
+            [InlineKeyboardButton('חזרה ⋟', callback_data='home', style=enums.ButtonStyle.PRIMARY), InlineKeyboardButton('✘ סגור', callback_data='closea', style=enums.ButtonStyle.DANGER)]
         ]
         await query.message.edit_media(InputMediaPhoto(PHOTO_URL, caption=txt), reply_markup=InlineKeyboardMarkup(btn))
 
     elif data == "help_d":
         txt = (
-            "<b><u>📥 הורדה מטיקטוק:</u></b>\n\n"
-            "<b>◉ הורדה רגילה:</b>\n"
-            "<blockquote>• <code>/d</code> [קישור] - שולחים את הפקודה ואחריה את הקישור.</blockquote>\n\n"
-            "<b>◉ הורדה בתגובה:</b>\n"
-            "<blockquote>• <code>/d</code> - מגיבים עם הפקודה על הודעה שמכילה קישור.</blockquote>\n\n"
-            "<blockquote>**הבוט תומך בהורדת סרטונים בלבד.**</blockquote>\n"
+            "<b><tg-emoji emoji-id='5443127283898405358'>📥</tg-emoji></b><b> </b><b><u>הורדה מטיקטוק:</u></b>\n\n\n<b>◉ </b><b><u>פקודה:</u></b>\n<blockquote>/d</blockquote>\n\n<b>◉ </b><b><u>איך משתמשים</u>?</b>\n<blockquote>שולחים את הפקודה ביחד עם קישור. אפשר גם להגיב לקישור עם הפקודה.</blockquote>"
         )
-        await query.message.edit_media(InputMediaPhoto(PHOTO_URL, caption=txt), reply_markup=InlineKeyboardMarkup([[InlineKeyboardButton('חזרה ⋟', callback_data='help')]]))
+        await query.message.edit_media(InputMediaPhoto(PHOTO_URL, caption=txt), reply_markup=InlineKeyboardMarkup([[InlineKeyboardButton('חזרה ⋟', callback_data='help', style=enums.ButtonStyle.PRIMARY)]]))
+
+
+    elif data == "help_telegraph":
+        txt = (
+            "<tg-emoji emoji-id='5445355530111437729'>📤</tg-emoji> <b><u>העלאת תמונות ל: i.ibb.co</u></b> 🖼️\n\n\n<b>◉ </b><b><u>פקודה:</u></b>\n<blockquote>/telegraph</blockquote>\n\n<b>◉ </b><b><u>איך משתמשים?</u></b>\n<blockquote>פשוט מגיבים על תמונה עם הפקודה.</blockquote>"
+        )
+        await query.message.edit_media(InputMediaPhoto(PHOTO_URL, caption=txt), reply_markup=InlineKeyboardMarkup([[InlineKeyboardButton('חזרה ⋟', callback_data='help', style=enums.ButtonStyle.PRIMARY)]]))
+
+
+    elif data == "help_exthumb":
+        txt = (
+            "<tg-emoji emoji-id='5823268688874179761'>🔧</tg-emoji> <b><i>כלים לוידאו:</i>\n\n\n</b><b><tg-emoji emoji-id='5332679880599418983'>ℹ️</tg-emoji></b><b> </b><b><u>מידע על וידאו:</u></b>\n<b>◉ פקודה:</b>\n<blockquote>/mediainfo</blockquote>\n\n<b>🖼️ </b><b><u>חילוץ תמונה ממוזערת:</u></b>\n<b>◉ פקודה:</b>\n<blockquote>/extract_thumbnail</blockquote>\n\n\n<b><u>איך משתמשים?</u></b>\n<blockquote>מגיבים על וידאו/קובץ עם הפקודה שרוצים.</blockquote>"
+        )
+        await query.message.edit_media(InputMediaPhoto(PHOTO_URL, caption=txt), reply_markup=InlineKeyboardMarkup([[InlineKeyboardButton('חזרה ⋟', callback_data='help', style=enums.ButtonStyle.PRIMARY)]]))
+
 
     elif data == "closea":
         try:
