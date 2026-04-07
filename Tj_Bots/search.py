@@ -1,3 +1,4 @@
+
 from pyrogram import Client, filters, enums
 from pyrogram.types import InlineKeyboardMarkup, InlineKeyboardButton, CallbackQuery
 from database import db
@@ -25,7 +26,7 @@ async def search_handler(client, message):
     
     if not results:
         try:
-            msg = await message.reply(f"🔍 לא נמצאו תוצאות לחיפוש:\n**{query}**", quote=True)
+            msg = await message.reply(f"**לא נמצאו תוצאות לחיפוש: `{query}`** <tg-emoji emoji-id='5924497670721769339'>🙅‍♂️</tg-emoji>", quote=True)
             await asyncio.sleep(2)
             await msg.delete()
         except:
@@ -68,10 +69,10 @@ async def send_results_page(client, message, results, page, query, settings, is_
     
     bot_username = client.me.username or "Bot"
 
-    text = f"**🔍 תוצאות חיפוש 🎬**\n\n"
-    text += f"📄 **שאילתה:** `{query}`\n"
-    text += f"🔢 **תוצאות:** `{total_results}`\n"
-    text += "**✄ ▬▬▬▬▬▬▬▬▬▬▬▬▬▬**\n\n"
+    text = f"<b><tg-emoji emoji-id='5319230516929502602'>🔍</tg-emoji></b> <b><i><u>תוצאות חיפוש</u></i></b> <tg-emoji emoji-id='5452069934089641166'>❓</tg-emoji>\n\n"
+    text += f"<blockquote><b><tg-emoji emoji-id='5397782960512444700'>📌</tg-emoji></b>   <b>שאילתה:</b> <code>{query}</code></blockquote>\n"
+    text += f"<blockquote><b><tg-emoji emoji-id='5282843764451195532'>🖥</tg-emoji></b>   <b>תוצאות:</b> <code>{total_results}</code></blockquote>\n"
+    text += "\n**<tg-emoji emoji-id='5406745015365943482'>⬇️</tg-emoji><tg-emoji emoji-id='5406745015365943482'>⬇️</tg-emoji><tg-emoji emoji-id='5406745015365943482'>⬇️</tg-emoji><tg-emoji emoji-id='5406745015365943482'>⬇️</tg-emoji><tg-emoji emoji-id='5406745015365943482'>⬇️</tg-emoji><tg-emoji emoji-id='5406745015365943482'>⬇️</tg-emoji><tg-emoji emoji-id='5406745015365943482'>⬇️</tg-emoji><tg-emoji emoji-id='5406745015365943482'>⬇️</tg-emoji><tg-emoji emoji-id='5406745015365943482'>⬇️</tg-emoji><tg-emoji emoji-id='5406745015365943482'>⬇️</tg-emoji>**\n\n"
     
     keyboard = []
     display_mode = settings.get('display_mode', 'inline')
@@ -83,7 +84,7 @@ async def send_results_page(client, message, results, page, query, settings, is_
             btn_text = f"[{size}] {clean}"
             file_id = str(res['_id'])
             
-            keyboard.append([InlineKeyboardButton(btn_text, callback_data=f"dl_{file_id}")])
+            keyboard.append([InlineKeyboardButton(btn_text, callback_data=f"dl_{file_id}", style=enums.ButtonStyle.PRIMARY)])
             
     else:
         chars = ['א', 'ב', 'ג', 'ד', 'ה', 'ו', 'ז', 'ח', 'ט', 'י']
@@ -95,11 +96,11 @@ async def send_results_page(client, message, results, page, query, settings, is_
             text += f"🎬 **{prefix}. [{clean}]({link})**\n\n"
 
     nav = []
-    if page > 1: nav.append(InlineKeyboardButton('⬅️', callback_data=f"search#{query}#{page-1}"))
-    if page < total_pages: nav.append(InlineKeyboardButton('➡️', callback_data=f"search#{query}#{page+1}"))
+    if page > 1: nav.append(InlineKeyboardButton('⬅️', callback_data=f"search#{query}#{page-1}", style=enums.ButtonStyle.SUCCESS))
+    if page < total_pages: nav.append(InlineKeyboardButton('➡️', callback_data=f"search#{query}#{page+1}", style=enums.ButtonStyle.SUCCESS))
     if nav: keyboard.append(nav)
     
-    keyboard.append([InlineKeyboardButton(f"‏ ￶‏ ￶📃 עמוד {page}/{total_pages}", callback_data="noop")])
+    keyboard.append([InlineKeyboardButton(f"‏ ￶‏ ￶📃 עמוד {page}/{total_pages}", callback_data="noop", style=enums.ButtonStyle.DANGER)])
 
     markup = InlineKeyboardMarkup(keyboard)
     
