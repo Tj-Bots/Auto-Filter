@@ -41,8 +41,12 @@
 /written - הופך טקסט לקובץ .txt
 /stickerid - מביא את הid של הסטיקר שהגיבו עליו.
 /d - הורדת סרטון מטיקטוק.
+/mediainfo - מידע על קובץ מmediainfo.
+/telegraph - העלאת תמונה לשרתי i.ibb.co.
+/extract_thumbnail - חילוץ תמונה ממוזערת ממדיה.
 ```
 
+<br>
 <details>
 <summary><b>⌨️ פקודות למנהלים</b></summary>
   
