@@ -135,8 +135,8 @@ async def send_home_message(client, message, user=None, is_edit=False):
 
     buttons = [
         [InlineKeyboardButton("🔍 Online Search 🔎", switch_inline_query_current_chat="", style=enums.ButtonStyle.PRIMARY)],
-        [InlineKeyboardButton('✇ Request Group ✇', url=REQUEST_GROUP, style=enums.ButtonStyle.SUCCESS),
-         InlineKeyboardButton('✇ Updates Channel ✇', url=f'https://t.me/{UPDATE_CHANNEL}', style=enums.ButtonStyle.SUCCESS)],
+        [InlineKeyboardButton('✇ Group ✇', url=REQUEST_GROUP, style=enums.ButtonStyle.SUCCESS),
+         InlineKeyboardButton('✇ Updates ✇', url=f'https://t.me/{UPDATE_CHANNEL}', style=enums.ButtonStyle.SUCCESS)],
         [InlineKeyboardButton('〄 Help 〄', callback_data='help', style=enums.ButtonStyle.PRIMARY),
          InlineKeyboardButton('⍟ About ⍟', callback_data='about', style=enums.ButtonStyle.PRIMARY)],
         [InlineKeyboardButton('⇋ Add to Group ⇋', url=f"http://t.me/{client.me.username}?startgroup&admin=delete_messages", style=enums.ButtonStyle.SUCCESS)]
@@ -211,11 +211,11 @@ async def callback_handler(client, query: CallbackQuery):
         user_mention = query.from_user.mention
         btns = [
             [InlineKeyboardButton('Group Settings', callback_data='help_settings', style=enums.ButtonStyle.SUCCESS),
-             InlineKeyboardButton('Copyright', callback_data='help_copyright', style=enums.ButtonStyle.SUCCESS)],
+             InlineKeyboardButton('© Copyright', callback_data='help_copyright', style=enums.ButtonStyle.SUCCESS)],
             [InlineKeyboardButton('Extra Tools', callback_data='help_extra', style=enums.ButtonStyle.SUCCESS),
              InlineKeyboardButton('User Guide', callback_data='help_guide', style=enums.ButtonStyle.SUCCESS)],
             [InlineKeyboardButton('TikTok Downloader', callback_data='help_d', style=enums.ButtonStyle.SUCCESS),
-             InlineKeyboardButton('Statistics', callback_data='help_stats', style=enums.ButtonStyle.SUCCESS)],
+             InlineKeyboardButton('Stats', callback_data='help_stats', style=enums.ButtonStyle.SUCCESS)],
             [InlineKeyboardButton('🆕 Telegraph', callback_data='help_telegraph', style=enums.ButtonStyle.PRIMARY),
              InlineKeyboardButton('🆕 Video Tools', callback_data='help_exthumb', style=enums.ButtonStyle.PRIMARY)],
             [InlineKeyboardButton('🏠 Home 🏠', callback_data='home', style=enums.ButtonStyle.DANGER)],
