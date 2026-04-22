@@ -10,12 +10,12 @@ CAPTCHA_DATA = {}
 @Client.on_message(filters.command("clean") & filters.user(ADMINS))
 async def clean_command(client, message):
     buttons = [
-        [InlineKeyboardButton("🗑️ ניקוי קבצים", callback_data="ask_clean_files")],
-        [InlineKeyboardButton("🗑️ ניקוי משתמשים", callback_data="ask_clean_users")],
-        [InlineKeyboardButton("🗑️ ניקוי קבוצות", callback_data="ask_clean_groups")],
-        [InlineKeyboardButton("❌ ביטול", callback_data="clean_cancel")]
+        [InlineKeyboardButton("🗑️ Clean Files", callback_data="ask_clean_files")],
+        [InlineKeyboardButton("🗑️ Clean Users", callback_data="ask_clean_users")],
+        [InlineKeyboardButton("🗑️ Clean Groups", callback_data="ask_clean_groups")],
+        [InlineKeyboardButton("❌ Cancel", callback_data="clean_cancel")]
     ]
-    await message.reply("⚠️ **תפריט ניקוי נתונים**\nבחר מה ברצונך למחוק מהדאטה בייס:", reply_markup=InlineKeyboardMarkup(buttons), quote=True)
+    await message.reply("⚠️ **Data Cleanup Menu**\nChoose what you want to delete from the database:", reply_markup=InlineKeyboardMarkup(buttons), quote=True)
 
 @Client.on_callback_query(filters.regex(r"^ask_clean_"))
 async def ask_clean_callback(client, query):
@@ -38,11 +38,11 @@ async def ask_clean_callback(client, query):
     for ans in answers:
         btns.append(InlineKeyboardButton(str(ans), callback_data=f"solve_clean_{ans}"))
     
-    markup = InlineKeyboardMarkup([btns, [InlineKeyboardButton("❌ ביטול", callback_data="clean_cancel")]])
+    markup = InlineKeyboardMarkup([btns, [InlineKeyboardButton("❌ Cancel", callback_data="clean_cancel")]])
     
-    target_name = "קבצים" if action == "files" else "משתמשים" if action == "users" else "קבוצות"
+    target_name = "Files" if action == "files" else "Users" if action == "users" else "Groups"
     await query.message.edit_text(
-        f"⚠️ **אימות אבטחה**\n\nאתה עומד למחוק את כל ה-**{target_name}**!\nכדי לאשר, פתור את התרגיל:\n\n**{num1} + {num2} = ?**",
+        f"⚠️ **Security Verification**\n\nYou are about to delete all {target_name}!\nTo confirm, solve the equation:\n\n**{num1} + {num2} = ?**",
         reply_markup=markup
     )
 
@@ -53,7 +53,7 @@ async def solve_clean_callback(client, query):
     key = (chat_id, user_id)
     
     if key not in CAPTCHA_DATA:
-        return await query.answer("הזמן עבר, נסה שוב.", show_alert=True)
+        return await query.answer("Time expired, try again.", show_alert=True)
     
     user_ans = int(query.data.split("_")[-1])
     correct_ans = CAPTCHA_DATA[key]['answer']
@@ -62,18 +62,18 @@ async def solve_clean_callback(client, query):
     if user_ans != correct_ans:
         del CAPTCHA_DATA[key]
         await query.message.delete()
-        return await query.answer("❌ תשובה שגויה. הפעולה בוטלה.", show_alert=True)
+        return await query.answer("❌ Wrong answer. Action cancelled.", show_alert=True)
     
     count = 0
     if action == "files":
         count = await db.delete_all_files()
-        msg = f"✅ נמחקו {count} קבצים מהמערכת."
+        msg = f"✅ Deleted {count} files from the system."
     elif action == "users":
         count = await db.delete_all_users()
-        msg = f"✅ נמחקו {count} משתמשים מהמערכת."
+        msg = f"✅ Deleted {count} users from the system."
     elif action == "groups":
         count = await db.delete_all_groups()
-        msg = f"✅ נמחקו {count} קבוצות מהמערכת."
+        msg = f"✅ Deleted {count} groups from the system."
     
     del CAPTCHA_DATA[key]
     await query.message.edit_text(msg)
