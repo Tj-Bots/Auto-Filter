@@ -1,4 +1,3 @@
-
 import asyncio
 from pyrogram import Client, filters, enums
 from pyrogram.types import InlineKeyboardMarkup, InlineKeyboardButton, CallbackQuery, InputMediaPhoto
@@ -23,7 +22,7 @@ async def send_file_with_fallback(client, chat_id, file_data, reply_to_id=None):
             
         file_name = file_data.get('file_name', '')
         file_size = get_readable_size(file_data.get('file_size', 0))
-        fallback_caption = f"**{file_name}**\n\n**💾 גודל: {file_size}**"
+        fallback_caption = f"**{file_name}**\n\n**💾 Size: {file_size}**"
         
         try:
             await client.send_video(
@@ -63,11 +62,11 @@ async def start_command(client, message):
                     is_subbed = False
 
             if not is_subbed:
-                btn = [[InlineKeyboardButton('📣 להרשמה לערוץ', url=f'https://t.me/{UPDATE_CHANNEL}')],
-                       [InlineKeyboardButton('↻ נסה שוב', callback_data=f"checksub_{file_db_id}")]]
+                btn = [[InlineKeyboardButton('📣 Join Channel', url=f'https://t.me/{UPDATE_CHANNEL}')],
+                       [InlineKeyboardButton('↻ Try Again', callback_data=f"checksub_{file_db_id}")]]
                 
                 return await message.reply_text(
-                    "**כדי להשתמש בבוט הזה עליך להיות מנוי לערוץ העדכונים שלו!🫰**",
+                    "**To use this bot you must subscribe to its update channel!🫰**",
                     reply_markup=InlineKeyboardMarkup(btn),
                     quote=True
                 )
@@ -76,7 +75,7 @@ async def start_command(client, message):
             if file_data:
                 success = await send_file_with_fallback(client, message.chat.id, file_data, message.id)
                 if not success:
-                    await message.reply("❌ הקובץ נמחק מהמקור או שאין לי גישה אליו.", quote=True)
+                    await message.reply("❌ The file was deleted from the source or I don't have access to it.", quote=True)
             return
 
         bot_name = client.me.first_name
@@ -84,7 +83,7 @@ async def start_command(client, message):
         bot_mention = f"[{bot_name}](https://t.me/{bot_username})"
 
         anim_msg = await message.reply_text(
-             f"<blockquote>**__היי <tg-emoji emoji-id='5195448447062251797'>👋</tg-emoji>__**\n**__ברוכים הבאים ל- {bot_mention} <tg-emoji emoji-id='5325559344513691205'>😎</tg-emoji>__**</blockquote>", 
+             f"<blockquote>**__Hey <tg-emoji emoji-id='5195448447062251797'>👋</tg-emoji>__**\n**__Welcome to {bot_mention} <tg-emoji emoji-id='5325559344513691205'>😎</tg-emoji>__**</blockquote>", 
              quote=True
         )        
         await asyncio.sleep(1.0)
@@ -92,20 +91,20 @@ async def start_command(client, message):
         await anim_msg.edit_text("<tg-emoji emoji-id='5456140674028019486'>⚡️</tg-emoji>")
         await asyncio.sleep(0.8)
 
-        await anim_msg.edit_text("**__מתחיל בוט...__** <tg-emoji emoji-id='5929303842205207391'>😈</tg-emoji>")
+        await anim_msg.edit_text("**__Starting bot...__** <tg-emoji emoji-id='5929303842205207391'>😈</tg-emoji>")
         await asyncio.sleep(0.7)
         
         await send_home_message(client, message)
         await anim_msg.delete()
 
     elif message.chat.type in [enums.ChatType.GROUP, enums.ChatType.SUPERGROUP]:
-        await message.reply("היי! אני מוכן לחיפוש סרטים 🎬", quote=True)
+        await message.reply("Hey! I'm ready to search for movies 🎬", quote=True)
 
 @Client.on_message(filters.new_chat_members)
 async def added_to_group(client, message):
     for member in message.new_chat_members:
         if member.id == client.me.id:
-            await message.reply("תודה שהוספתם אותי! 🎬\nשלחו את שם הסרט/סדרה שתרצו לחפש.", quote=True)
+            await message.reply("Thanks for adding me! 🎬\nSend the name of the movie/series you want to search for.", quote=True)
 
 async def send_home_message(client, message, user=None, is_edit=False):
     if not user:
@@ -117,20 +116,20 @@ async def send_home_message(client, message, user=None, is_edit=False):
     bot_mention = f"[{bot_name}](https://t.me/{bot_username})"
     
     buttons = [
-        [InlineKeyboardButton("🔍 חיפוש באינליין 🔎", switch_inline_query_current_chat="", style=enums.ButtonStyle.PRIMARY)],
-        [InlineKeyboardButton('✇ קבוצת בקשות ✇', url=REQUEST_GROUP, style=enums.ButtonStyle.SUCCESS), 
-         InlineKeyboardButton('✇ ערוץ עדכונים ✇', url=f'https://t.me/{UPDATE_CHANNEL}', style=enums.ButtonStyle.SUCCESS)],
-        [InlineKeyboardButton('〄 עזרה 〄', callback_data='help', style=enums.ButtonStyle.PRIMARY), 
-         InlineKeyboardButton('⍟ אודות ⍟', callback_data='about', style=enums.ButtonStyle.PRIMARY)],
-        [InlineKeyboardButton('⇋ להוספה לקבוצה ⇋', url=f"http://t.me/{client.me.username}?startgroup&admin=delete_messages", style=enums.ButtonStyle.SUCCESS)]
+        [InlineKeyboardButton("🔍 Online Search 🔎", switch_inline_query_current_chat="", style=enums.ButtonStyle.PRIMARY)],
+        [InlineKeyboardButton('✇ Request Group ✇', url=REQUEST_GROUP, style=enums.ButtonStyle.SUCCESS), 
+         InlineKeyboardButton('✇ Updates Channel ✇', url=f'https://t.me/{UPDATE_CHANNEL}', style=enums.ButtonStyle.SUCCESS)],
+        [InlineKeyboardButton('〄 Help 〄', callback_data='help', style=enums.ButtonStyle.PRIMARY), 
+         InlineKeyboardButton('⍟ About ⍟', callback_data='about', style=enums.ButtonStyle.PRIMARY)],
+        [InlineKeyboardButton('⇋ Add to Group ⇋', url=f"http://t.me/{client.me.username}?startgroup&admin=delete_messages", style=enums.ButtonStyle.SUCCESS)]
     ]
     
-    txt = (f"**היי {user_mention} <tg-emoji emoji-id='5195448447062251797'>👋</tg-emoji>**\n"
-            f"**ברוכים הבאים ל- {bot_mention}** <tg-emoji emoji-id='5325559344513691205'>😎</tg-emoji>\n\n"
-           "**אני מנוע חיפוש סרטים וסדרות חדשני,**"
-           "\n<b>התפקיד שלי זה לחפש סרטים בקבוצות,"
-           "\nהוסיפו אותי לקבוצה שלכם ואני אמשיך מכאן.</b><tg-emoji emoji-id='5224607267797606837'>☄️</tg-emoji>\n\n"
-           "<blockquote>**👨🏼‍💻מתכנת ראשי: @BOSS1480**</blockquote>")
+    txt = (f"**Hey {user_mention} <tg-emoji emoji-id='5195448447062251797'>👋</tg-emoji>**\n"
+            f"**Welcome to {bot_mention}** <tg-emoji emoji-id='5325559344513691205'>😎</tg-emoji>\n\n"
+           "**I am an innovative movie and series search engine,**"
+           "\n<b>My job is to search for movies in groups,"
+           "\nAdd me to your group and I'll take it from here.</b><tg-emoji emoji-id='5224607267797606837'>☄️</tg-emoji>\n\n"
+           "<blockquote>**👨🏼‍💻Lead Developer: @BOSS1480**</blockquote>")
     
     if is_edit:
         await message.edit_media(InputMediaPhoto(PHOTO_URL, caption=txt), reply_markup=InlineKeyboardMarkup(buttons))
@@ -155,7 +154,7 @@ async def callback_handler(client, query: CallbackQuery):
                 is_subbed = False
 
         if not is_subbed:
-            return await query.answer("❌ עדיין לא נרשמת לערוץ! עליך להירשם כדי לקבל את הקובץ.", show_alert=True)
+            return await query.answer("❌ You still haven't joined the channel! You must join to receive the file.", show_alert=True)
         
         file_data = await db.get_file(file_db_id)
         if file_data:
@@ -164,13 +163,13 @@ async def callback_handler(client, query: CallbackQuery):
             if success:
                 await query.message.delete()
             else:
-                await query.answer("❌ הקובץ נמחק מהמקור או שאין לי גישה אליו.", show_alert=True)
+                await query.answer("❌ The file was deleted from the source or I don't have access to it.", show_alert=True)
         else:
-            await query.answer("❌ הקובץ לא נמצא במסד הנתונים.", show_alert=True)
+            await query.answer("❌ The file was not found in the database.", show_alert=True)
         return
 
     if data == "help_admin" and user_id not in ADMINS:
-        return await query.answer("⛔ למנהלים בלבד.", show_alert=True)
+        return await query.answer("⛔ Admins only.", show_alert=True)
     
     if data not in ["closea", "noop", "help_stats"]:
         try:
@@ -189,99 +188,99 @@ async def callback_handler(client, query: CallbackQuery):
         user_mention = query.from_user.mention
         
         btns = [
-            [InlineKeyboardButton('הגדרות קבוצה', callback_data='help_settings', style=enums.ButtonStyle.SUCCESS), InlineKeyboardButton('זכויות יוצרים', callback_data='help_copyright', style=enums.ButtonStyle.SUCCESS)],
-            [InlineKeyboardButton('תוספות (Extra)', callback_data='help_extra', style=enums.ButtonStyle.SUCCESS), InlineKeyboardButton('מדריך שימוש', callback_data='help_guide', style=enums.ButtonStyle.SUCCESS)],
-            [InlineKeyboardButton('הורדה מטיקטוק', callback_data='help_d', style=enums.ButtonStyle.SUCCESS),           InlineKeyboardButton('סטטיסטיקות', callback_data='help_stats', style=enums.ButtonStyle.SUCCESS)],
-            [InlineKeyboardButton('🆕 העלאת תמונה', callback_data='help_telegraph', style=enums.ButtonStyle.PRIMARY),           InlineKeyboardButton('🆕 כלים לוידאו', callback_data='help_exthumb', style=enums.ButtonStyle.PRIMARY)],
-            [InlineKeyboardButton('🏠 בית 🏠', callback_data='home', style=enums.ButtonStyle.DANGER)],          
+            [InlineKeyboardButton('Group Settings', callback_data='help_settings', style=enums.ButtonStyle.SUCCESS), InlineKeyboardButton('Copyright', callback_data='help_copyright', style=enums.ButtonStyle.SUCCESS)],
+            [InlineKeyboardButton('Extra Tools', callback_data='help_extra', style=enums.ButtonStyle.SUCCESS), InlineKeyboardButton('User Guide', callback_data='help_guide', style=enums.ButtonStyle.SUCCESS)],
+            [InlineKeyboardButton('TikTok Downloader', callback_data='help_d', style=enums.ButtonStyle.SUCCESS),           InlineKeyboardButton('Statistics', callback_data='help_stats', style=enums.ButtonStyle.SUCCESS)],
+            [InlineKeyboardButton('🆕 Upload Image', callback_data='help_telegraph', style=enums.ButtonStyle.PRIMARY),           InlineKeyboardButton('🆕 Video Tools', callback_data='help_exthumb', style=enums.ButtonStyle.PRIMARY)],
+            [InlineKeyboardButton('🏠 Home 🏠', callback_data='home', style=enums.ButtonStyle.DANGER)],          
         ]
         
         if user_id in ADMINS:
-             btns.insert(0, [InlineKeyboardButton('👮‍♂️ פקודות מנהל 👮‍♂️', callback_data='help_admin', style=enums.ButtonStyle.DANGER)])
+             btns.insert(0, [InlineKeyboardButton('👮‍♂️ Admin Commands 👮‍♂️', callback_data='help_admin', style=enums.ButtonStyle.DANGER)])
 
         await query.message.edit_media(
-            InputMediaPhoto(PHOTO_URL, caption=f"<b>היי {user_mention},\nכאן תוכל לקבל עזרה עבור כל הפקודות שלי.</b>"), 
+            InputMediaPhoto(PHOTO_URL, caption=f"<b>Hey {user_mention},\nHere you can get help for all my commands.</b>"), 
             reply_markup=InlineKeyboardMarkup(btns)
         )
 
     elif data == "help_extra":
         txt = (
-            "<b><u>פקודות נוספות (Extra Tools):</u></b>\n\n"
-            "<b>◉ פונט טקסט:</b>\n"
-            "<blockquote>• <code>/font</code> [טקסט] - הופך טקסט באנגלית לפונטים מיוחדים.</blockquote>\n\n"
-            "<b>◉ שיתוף טקסט:</b>\n"
-            "<blockquote>• <code>/share</code> [טקסט] - יוצר קישור שיתוף מהיר לטקסט שכתבתם.</blockquote>\n\n"
-            "<b>◉ תמלול הודעות (TTS):</b>\n"
-            "<blockquote>• <code>/tts</code> - הגיבו על הודעת טקסט, והבוט ישלח לכם אותה בהודעה קולית.</blockquote>\n\n"
-            "<b>◉ העלאת טקסט (Paste):</b>\n"
-            "<blockquote>• <code>/paste</code> - הגיבו על טקסט או קובץ כדי להעלות אותו ל-Pastebin ולקבל קישור.</blockquote>\n\n"
-            "<b>◉ פרטים על משתמש:</b>\n"
-            "<blockquote>• <code>/id</code> - מזהה משתמש/מזהה צ'אט.</blockquote>\n"
-            "<blockquote>• <code>/info</code> - מידע על חשבון של משתמש, פרופיל, שם, יוזר וכו'...</blockquote>\n\n"
-            "<b>◉ מזהה סטיקר</b>\n"
-            "<blockquote>• <code>/stickerid</code> - מביא את הid של הסטיקר שהגיבו עליו.</blockquote>\n\n"
-            "<b>◉ כלי מערכת:</b>\n"
-            "<blockquote>• <code>/json</code> - קבלת המידע הטכני (JSON) של ההודעה.</blockquote>\n"
-            "<blockquote>• <code>/written</code> [שם קובץ] - הופך את הטקסט לקובץ טקסט.</blockquote>"
+            "<b><u>Extra Tools:</u></b>\n\n"
+            "<b>◉ Text Font:</b>\n"
+            "<blockquote>• <code>/font</code> [text] - Converts English text to special fonts.</blockquote>\n\n"
+            "<b>◉ Share Text:</b>\n"
+            "<blockquote>• <code>/share</code> [text] - Creates a quick share link for the text you wrote.</blockquote>\n\n"
+            "<b>◉ Text to Speech (TTS):</b>\n"
+            "<blockquote>• <code>/tts</code> - Reply to a text message, and the bot will send it back as a voice message.</blockquote>\n\n"
+            "<b>◉ Paste Text:</b>\n"
+            "<blockquote>• <code>/paste</code> - Reply to text or a file to upload it to Pastebin and get a link.</blockquote>\n\n"
+            "<b>◉ User Info:</b>\n"
+            "<blockquote>• <code>/id</code> - User ID / Chat ID.</blockquote>\n"
+            "<blockquote>• <code>/info</code> - Information about a user account, profile, name, username, etc...</blockquote>\n\n"
+            "<b>◉ Sticker ID</b>\n"
+            "<blockquote>• <code>/stickerid</code> - Gets the ID of the sticker you replied to.</blockquote>\n\n"
+            "<b>◉ System Tools:</b>\n"
+            "<blockquote>• <code>/json</code> - Get the technical (JSON) info of the message.</blockquote>\n"
+            "<blockquote>• <code>/written</code> [file name] - Converts the text into a text file.</blockquote>"
         )
-        await query.message.edit_media(InputMediaPhoto(PHOTO_URL, caption=txt), reply_markup=InlineKeyboardMarkup([[InlineKeyboardButton('חזרה ⋟', callback_data='help', style=enums.ButtonStyle.PRIMARY)]]))
+        await query.message.edit_media(InputMediaPhoto(PHOTO_URL, caption=txt), reply_markup=InlineKeyboardMarkup([[InlineKeyboardButton('Back ⋟', callback_data='help', style=enums.ButtonStyle.PRIMARY)]]))
 
     elif data == "help_admin":
         txt = (
-            "<b><u>לוח בקרה למנהלים:</u></b>\n\n"
-            "<b>◉ ניהול תוכן:</b>\n"
-            "<blockquote>• <code>/index</code> [link] - [start] - הוספת קבצים מערוץ (לפי טווח).\n"
-            "• <code>/newindex</code> [ID] - מעקב אחרי תוכן חדש בערוץ.\n"
-            "• <code>/channels</code> - ניהול ערוצים במעקב.</blockquote>\n\n"
-            "<b>◉ משתמשים וקבוצות:</b>\n"
-            "<blockquote>• <code>/ban</code> [ID] - חסימת משתמש.\n"
-            "• <code>/unban</code> [ID] - שחרור משתמש.\n"
-            "• <code>/ban_chat</code> [ID] - חסימת קבוצה.\n"
-            "• <code>/unban_chat</code> [ID] - שחרור קבוצה.\n"
-            "• <code>/leave</code> [ID] - יציאה מקבוצה (ללא חסימה).</blockquote>\n\n"
-            "<b>◉ מערכת:</b>\n"
-            "<blockquote>• <code>/clean</code> - אשף ניקוי נתונים.\n"
-            "• <code>/broadcast</code> [-f] - שידור למנויים.\n"
-            "• <code>/broadcast_groups</code> - שידור לקבוצות.\n"
-            "• <code>/restart</code> - הפעלה מחדש.</blockquote>"
+            "<b><u>Admin Control Panel:</u></b>\n\n"
+            "<b>◉ Content Management:</b>\n"
+            "<blockquote>• <code>/index</code> [link] - [start] - Add files from a channel (by range).\n"
+            "• <code>/newindex</code> [ID] - Track new content in a channel.\n"
+            "• <code>/channels</code> - Manage tracked channels.</blockquote>\n\n"
+            "<b>◉ Users and Groups:</b>\n"
+            "<blockquote>• <code>/ban</code> [ID] - Ban a user.\n"
+            "• <code>/unban</code> [ID] - Unban a user.\n"
+            "• <code>/ban_chat</code> [ID] - Ban a group.\n"
+            "• <code>/unban_chat</code> [ID] - Unban a group.\n"
+            "• <code>/leave</code> [ID] - Leave a group (without banning).</blockquote>\n\n"
+            "<b>◉ System:</b>\n"
+            "<blockquote>• <code>/clean</code> - Data cleanup wizard.\n"
+            "• <code>/broadcast</code> [-f] - Broadcast to subscribers.\n"
+            "• <code>/broadcast_groups</code> - Broadcast to groups.\n"
+            "• <code>/restart</code> - Restart the bot.</blockquote>"
         )
-        await query.message.edit_media(InputMediaPhoto(PHOTO_URL, caption=txt), reply_markup=InlineKeyboardMarkup([[InlineKeyboardButton('חזרה ⋟', callback_data='help', style=enums.ButtonStyle.PRIMARY)]]))
+        await query.message.edit_media(InputMediaPhoto(PHOTO_URL, caption=txt), reply_markup=InlineKeyboardMarkup([[InlineKeyboardButton('Back ⋟', callback_data='help', style=enums.ButtonStyle.PRIMARY)]]))
 
     elif data == "help_guide":
         txt = (
             "<blockquote>"
-            "⚙️ <b><u> מדריך לחיפוש ברובוט החיפוש</u></b> 💡\n\n"
-            "כדי לבקש סרט או סדרה, יש לשים לב לדרך בה אתם מבקשים. חשוב לכתוב את השם המדויק של הסרט או הסדרה שברצונכם למצוא.\n\n"
-            "<b><i><u>דוגמאות לחיפוש נכון </u></i></b>✔️\n"
-            "אשמתי\n"
-            "מהיר ועצבני\n\n"
-            "<b><i><u>דוגמאות לא נכונות </u></i></b>❌\n"
-            "יש הארי פוטר?\n"
-            "אפשר הארי פוטר\n"
-            "יש את הסרט הארי פוטר?\n\n"
-            "<b>הבנתם? מעולה!</b>\n"
-            "<b>נסו עכשיו בקבוצה!</b>\n\n"
-            "<b>לא הבנתם</b> <b>⁉️</b>\n"
-            "<b>אל תדאגו</b> ‼️\n"
-            "אנחנו כאן כדי לעזור! הצוות המעולה שלנו תמיד זמין לענות על בקשות ⚡️\n"
-            "זהו פשוט עוד דרך חכמה למענה מהיר יותר"
+            "⚙️ <b><u> Search Robot Guide</u></b> 💡\n\n"
+            "To request a movie or series, pay attention to how you ask. It is important to write the exact name of the movie or series you want to find.\n\n"
+            "<b><i><u>Correct search examples </u></i></b>✔️\n"
+            "Ashamti\n"
+            "Fast and Furious\n\n"
+            "<b><i><u>Incorrect examples </u></i></b>❌\n"
+            "Do you have Harry Potter?\n"
+            "Can I get Harry Potter\n"
+            "Do you have the movie Harry Potter?\n\n"
+            "<b>Got it? Great!</b>\n"
+            "<b>Try it now in the group!</b>\n\n"
+            "<b>Didn't understand</b> <b>⁉️</b>\n"
+            "<b>Don't worry</b> ‼️\n"
+            "We are here to help! Our awesome team is always available to answer requests ⚡️\n"
+            "It's just another smart way for faster responses"
             "</blockquote>"
 )
 
-        btn = [[InlineKeyboardButton('למעבר לקבוצה 💬', url=REQUEST_GROUP, style=enums.ButtonStyle.SUCCESS)], [InlineKeyboardButton('חזרה ⋟', callback_data='help', style=enums.ButtonStyle.PRIMARY)]]
+        btn = [[InlineKeyboardButton('Go to Group 💬', url=REQUEST_GROUP, style=enums.ButtonStyle.SUCCESS)], [InlineKeyboardButton('Back ⋟', callback_data='help', style=enums.ButtonStyle.PRIMARY)]]
         await query.message.edit_media(InputMediaPhoto(PHOTO_URL, caption=txt), reply_markup=InlineKeyboardMarkup(btn))
 
     elif data == "help_copyright":
-        txt = "<b>© זכויות יוצרים</b>\n\nהקבצים בבוט נאספים מטלגרם באופן אוטומטי. איננו מעלים תוכן בעצמנו."
-        await query.message.edit_media(InputMediaPhoto(PHOTO_URL, caption=txt), reply_markup=InlineKeyboardMarkup([[InlineKeyboardButton('חזרה ⋟', callback_data='help', style=enums.ButtonStyle.PRIMARY)]]))
+        txt = "<b>© Copyright</b>\n\nThe files in this bot are collected from Telegram automatically. We do not upload content ourselves."
+        await query.message.edit_media(InputMediaPhoto(PHOTO_URL, caption=txt), reply_markup=InlineKeyboardMarkup([[InlineKeyboardButton('Back ⋟', callback_data='help', style=enums.ButtonStyle.PRIMARY)]]))
     
     elif data == "help_settings":
-        txt = "<b>⚙️ הגדרות קבוצה</b>\n\nשלחו <code>/settings</code> בקבוצה כדי להגדיר:\n• מצב תצוגה (כפתורים/טקסט)\n• טריגר חיפוש (!)\n• כמות תוצאות"
-        await query.message.edit_media(InputMediaPhoto(PHOTO_URL, caption=txt), reply_markup=InlineKeyboardMarkup([[InlineKeyboardButton('חזרה ⋟', callback_data='help', style=enums.ButtonStyle.PRIMARY)]]))
+        txt = "<b>⚙️ Group Settings</b>\n\nSend <code>/settings</code> in the group to set:\n• Display mode (buttons/text)\n• Search trigger (!)\n• Number of results"
+        await query.message.edit_media(InputMediaPhoto(PHOTO_URL, caption=txt), reply_markup=InlineKeyboardMarkup([[InlineKeyboardButton('Back ⋟', callback_data='help', style=enums.ButtonStyle.PRIMARY)]]))
 
     elif data == "help_stats":
         try:
-            await query.message.edit_caption("⏳ **מחשב נתונים...**")
+            await query.message.edit_caption("⏳ **Calculating data...**")
         except:
             pass
 
@@ -311,28 +310,28 @@ async def callback_handler(client, query: CallbackQuery):
             bar = '▓' * filled_len + '░' * (bar_len - filled_len)
             
             db_info = (
-                f"🗄 <u>**אחסון דאטה בייס:**</u>\n"
-                f"<blockquote>**★ בשימוש:** `{used_size}`\n"
-                f"**★ מתוך:** `{max_size}`\n"
-                f"★ **סטטוס:** [{bar}] `{percentage:.2f}%`</blockquote>"
+                f"🗄 <u>**Database Storage:**</u>\n"
+                f"<blockquote>**★ Used:** `{used_size}`\n"
+                f"**★ Out of:** `{max_size}`\n"
+                f"★ **Status:** [{bar}] `{percentage:.2f}%`</blockquote>"
             )
         except Exception as e:
-            db_info = f"❌ לא ניתן לשלוף נתונים טכניים.\n`{e}`"
+            db_info = f"❌ Unable to fetch technical data.\n`{e}`"
 
         txt = (
-            f"📊 <u>**סטטיסטיקות הבוט:**</u>\n\n"
-            f"🤖 <u>**סטטוס בוט:**</u>\n"
-            f"<blockquote>★ **קבצים:** `{files}`\n"
-            f"★ **משתמשים:** `{users}`\n"
-            f"★ **קבוצות:** `{groups}`</blockquote>\n\n"
+            f"📊 <u>**Bot Statistics:**</u>\n\n"
+            f"🤖 <u>**Bot Status:**</u>\n"
+            f"<blockquote>★ **Files:** `{files}`\n"
+            f"★ **Users:** `{users}`\n"
+            f"★ **Groups:** `{groups}`</blockquote>\n\n"
             f"{db_info}"
         )
         
         await query.message.edit_media(
             InputMediaPhoto(PHOTO_URL, caption=txt), 
             reply_markup=InlineKeyboardMarkup([
-                [InlineKeyboardButton('חזרה ⋟', callback_data='help', style=enums.ButtonStyle.PRIMARY),
-                 InlineKeyboardButton('↻ רענן', callback_data='help_stats', style=enums.ButtonStyle.SUCCESS)]
+                [InlineKeyboardButton('Back ⋟', callback_data='help', style=enums.ButtonStyle.PRIMARY),
+                 InlineKeyboardButton('↻ Refresh', callback_data='help_stats', style=enums.ButtonStyle.SUCCESS)]
             ])
         )
 
@@ -341,42 +340,42 @@ async def callback_handler(client, query: CallbackQuery):
         bot_username = client.me.username
         bot_mention = f"[{bot_name}](https://t.me/{bot_username})"
         txt = (
-            "<blockquote><b>╔════❰ 𝗔𝗯𝗼𝘂𝘁 𝗧𝗵𝗲 𝗕𝗼𝘁 ❱═❍⊱❁۪۪</b>\n"
+            "<blockquote><b>╔════❰ About The Bot ❱═❍⊱❁۪۪</b>\n"
             "<b>║╭━━━━━━━━━━━━━━━➣</b>\n"
-            f"<b>║┣⪼ 🤖 ʙᴏᴛ : {bot_mention}</b>\n"
-            "<b>║┣⪼ 👦 ᴄʀᴇᴀᴛᴏʀ : @BOSS1480</b>\n"
-            f"<b>║┣⪼ 🤖 ᴜᴘᴅᴀᴛᴇ : <a href='https://t.me/{UPDATE_CHANNEL}'>Update Channel</a></b>\n"
-            "<b>║┣⪼ 🗣️ ʟᴀɴɢᴜᴀɢᴇ : [Python](https://www.python.org/)</b>\n"
-            "<b>║┣⪼ 📚 Lɪʙʀᴀʀʏ : [Pyrogram](https://docs.pyrogram.org/)</b>\n"
-            "<b>║┣⪼ &lt;/&gt; Sᴏᴜʀᴄᴇ: : [GitHub](https://github.com/TJ-Bots/Search-Movies)</b>\n"
+            f"<b>║┣⪼ 🤖 Bot : {bot_mention}</b>\n"
+            "<b>║┣⪼ 👦 Creator : @BOSS1480</b>\n"
+            f"<b>║┣⪼ 🤖 Update : <a href='https://t.me/{UPDATE_CHANNEL}'>Update Channel</a></b>\n"
+            "<b>║┣⪼ 🗣️ Language : [Python](https://www.python.org/)</b>\n"
+            "<b>║┣⪼ 📚 Library : [Pyrogram](https://docs.pyrogram.org/)</b>\n"
+            "<b>║┣⪼ &lt;/&gt; Source : [GitHub](https://github.com/TJ-Bots/Search-Movies)</b>\n"
             "<b>║╰━━━━━━━━━━━━━━━➣</b>\n"
             "<b>╚══════════════════❍⊱❁۪۪</b></blockquote>"
         )
         btn = [
-            [InlineKeyboardButton('🐙 𝚜𝚘𝚞𝚛𝚌𝚎 𝚌𝚘𝚍𝚎 🐙', url='https://github.com/TJ-Bots/Search-Movies', style=enums.ButtonStyle.SUCCESS)], 
-            [InlineKeyboardButton('חזרה ⋟', callback_data='home', style=enums.ButtonStyle.PRIMARY), InlineKeyboardButton('✘ סגור', callback_data='closea', style=enums.ButtonStyle.DANGER)]
+            [InlineKeyboardButton('🐙 Source Code 🐙', url='https://github.com/TJ-Bots/Search-Movies', style=enums.ButtonStyle.SUCCESS)], 
+            [InlineKeyboardButton('Back ⋟', callback_data='home', style=enums.ButtonStyle.PRIMARY), InlineKeyboardButton('✘ Close', callback_data='closea', style=enums.ButtonStyle.DANGER)]
         ]
         await query.message.edit_media(InputMediaPhoto(PHOTO_URL, caption=txt), reply_markup=InlineKeyboardMarkup(btn))
 
     elif data == "help_d":
         txt = (
-            "<b><tg-emoji emoji-id='5443127283898405358'>📥</tg-emoji></b><b> </b><b><u>הורדה מטיקטוק:</u></b>\n\n\n<b>◉ </b><b><u>פקודה:</u></b>\n<blockquote>/d</blockquote>\n\n<b>◉ </b><b><u>איך משתמשים</u>?</b>\n<blockquote>שולחים את הפקודה ביחד עם קישור. אפשר גם להגיב לקישור עם הפקודה.</blockquote>"
+            "<b><tg-emoji emoji-id='5443127283898405358'>📥</tg-emoji></b><b> </b><b><u>TikTok Downloader:</u></b>\n\n\n<b>◉ </b><b><u>Command:</u></b>\n<blockquote>/d</blockquote>\n\n<b>◉ </b><b><u>How to use</u>?</b>\n<blockquote>Send the command together with a link. You can also reply to a link with the command.</blockquote>"
         )
-        await query.message.edit_media(InputMediaPhoto(PHOTO_URL, caption=txt), reply_markup=InlineKeyboardMarkup([[InlineKeyboardButton('חזרה ⋟', callback_data='help', style=enums.ButtonStyle.PRIMARY)]]))
+        await query.message.edit_media(InputMediaPhoto(PHOTO_URL, caption=txt), reply_markup=InlineKeyboardMarkup([[InlineKeyboardButton('Back ⋟', callback_data='help', style=enums.ButtonStyle.PRIMARY)]]))
 
 
     elif data == "help_telegraph":
         txt = (
-            "<tg-emoji emoji-id='5445355530111437729'>📤</tg-emoji> <b><u>העלאת תמונות ל: i.ibb.co</u></b> 🖼️\n\n\n<b>◉ </b><b><u>פקודה:</u></b>\n<blockquote>/telegraph</blockquote>\n\n<b>◉ </b><b><u>איך משתמשים?</u></b>\n<blockquote>פשוט מגיבים על תמונה עם הפקודה.</blockquote>"
+            "<tg-emoji emoji-id='5445355530111437729'>📤</tg-emoji> <b><u>Upload Images to: i.ibb.co</u></b> 🖼️\n\n\n<b>◉ </b><b><u>Command:</u></b>\n<blockquote>/telegraph</blockquote>\n\n<b>◉ </b><b><u>How to use?</u></b>\n<blockquote>Simply reply to an image with the command.</blockquote>"
         )
-        await query.message.edit_media(InputMediaPhoto(PHOTO_URL, caption=txt), reply_markup=InlineKeyboardMarkup([[InlineKeyboardButton('חזרה ⋟', callback_data='help', style=enums.ButtonStyle.PRIMARY)]]))
+        await query.message.edit_media(InputMediaPhoto(PHOTO_URL, caption=txt), reply_markup=InlineKeyboardMarkup([[InlineKeyboardButton('Back ⋟', callback_data='help', style=enums.ButtonStyle.PRIMARY)]]))
 
 
     elif data == "help_exthumb":
         txt = (
-            "<tg-emoji emoji-id='5823268688874179761'>🔧</tg-emoji> <b><i>כלים לוידאו:</i>\n\n\n</b><b><tg-emoji emoji-id='5332679880599418983'>ℹ️</tg-emoji></b><b> </b><b><u>מידע על וידאו:</u></b>\n<b>◉ פקודה:</b>\n<blockquote>/mediainfo</blockquote>\n\n<b>🖼️ </b><b><u>חילוץ תמונה ממוזערת:</u></b>\n<b>◉ פקודה:</b>\n<blockquote>/extract_thumbnail</blockquote>\n\n\n<b><u>איך משתמשים?</u></b>\n<blockquote>מגיבים על וידאו/קובץ עם הפקודה שרוצים.</blockquote>"
+            "<tg-emoji emoji-id='5823268688874179761'>🔧</tg-emoji> <b><i>Video Tools:</i>\n\n\n</b><b><tg-emoji emoji-id='5332679880599418983'>ℹ️</tg-emoji></b><b> </b><b><u>Video Info:</u></b>\n<b>◉ Command:</b>\n<blockquote>/mediainfo</blockquote>\n\n<b>🖼️ </b><b><u>Extract Thumbnail:</u></b>\n<b>◉ Command:</b>\n<blockquote>/extract_thumbnail</blockquote>\n\n\n<b><u>How to use?</u></b>\n<blockquote>Reply to a video/file with the desired command.</blockquote>"
         )
-        await query.message.edit_media(InputMediaPhoto(PHOTO_URL, caption=txt), reply_markup=InlineKeyboardMarkup([[InlineKeyboardButton('חזרה ⋟', callback_data='help', style=enums.ButtonStyle.PRIMARY)]]))
+        await query.message.edit_media(InputMediaPhoto(PHOTO_URL, caption=txt), reply_markup=InlineKeyboardMarkup([[InlineKeyboardButton('Back ⋟', callback_data='help', style=enums.ButtonStyle.PRIMARY)]]))
 
 
     elif data == "closea":
@@ -384,6 +383,4 @@ async def callback_handler(client, query: CallbackQuery):
             await query.message.delete()
             await query.message.reply_to_message.delete()
         except:
-            pass
-    elif data == "noop":
-        await query.answer()
+         
