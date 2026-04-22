@@ -2,10 +2,13 @@ from pyrogram import Client, filters
 from gtts import gTTS
 from io import BytesIO
 import asyncio
+from langdetect import detect
 
 def convert_to_audio(text):
-    lang = 'iw' if any("\u0590" <= c <= "\u05EA" for c in text) else 'en'
-    
+    try:
+        lang = detect(text)
+    except:
+        lang = 'en'
     tts = gTTS(text=text, lang=lang)
     audio_file = BytesIO()
     tts.write_to_fp(audio_file)
@@ -16,7 +19,7 @@ def convert_to_audio(text):
 @Client.on_message(filters.command("tts"))
 async def tts_handler(client, message):
     text = ""
-    
+
     if message.reply_to_message and message.reply_to_message.text:
         text = message.reply_to_message.text
     elif len(message.command) > 1:
@@ -29,9 +32,9 @@ async def tts_handler(client, message):
     try:
         loop = asyncio.get_running_loop()
         audio = await loop.run_in_executor(None, convert_to_audio, text)
-        
+
         await message.reply_audio(audio, quote=True)
         await status.delete()
-        
+
     except Exception as e:
         await status.edit(f"❌ Error: `{e}`")
