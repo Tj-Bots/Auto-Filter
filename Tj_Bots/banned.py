@@ -14,9 +14,9 @@ async def ban_enforcer(client, message):
         if ban_info:
             if message.chat.type == enums.ChatType.PRIVATE:
                 await message.reply(
-                    f"🚫 **אתה חסום מהשימוש בבוט.**\nסיבה: `{ban_info.get('reason')}`\n\nלבירורים פנה לתמיכה.",
+                    f"🚫 **You are banned from using this bot.**\nReason: `{ban_info.get('reason')}`\n\nFor inquiries, contact support.",
                     quote=True,
-                    reply_markup=InlineKeyboardMarkup([[InlineKeyboardButton("🛠️ תמיכה", url=SUPPORT_LINK)]])
+                    reply_markup=InlineKeyboardMarkup([[InlineKeyboardButton("🛠️ Support", url=SUPPORT_LINK)]])
                 )
             message.stop_propagation()
             return
@@ -26,9 +26,9 @@ async def ban_enforcer(client, message):
         if chat_ban_info:
             try:
                 await message.reply(
-                    f"🚫 **קבוצה זו נחסמה לשימוש.**\nסיבה: `{chat_ban_info.get('reason')}`\n\nהבוט יוצא מהקבוצה כעת.",
+                    f"🚫 **This group has been banned from using the bot.**\nReason: `{chat_ban_info.get('reason')}`\n\nThe bot is leaving the group now.",
                     quote=True,
-                    reply_markup=InlineKeyboardMarkup([[InlineKeyboardButton("🛠️ תמיכה", url=SUPPORT_LINK)]])
+                    reply_markup=InlineKeyboardMarkup([[InlineKeyboardButton("🛠️ Support", url=SUPPORT_LINK)]])
                 )
                 await client.leave_chat(message.chat.id)
             except: pass
@@ -37,70 +37,70 @@ async def ban_enforcer(client, message):
 @Client.on_message(filters.command("ban") & filters.user(ADMINS))
 async def ban_user_cmd(client, message):
     if len(message.command) < 2:
-        return await message.reply("שימוש: `/ban [ID] [סיבה]`", quote=True)
+        return await message.reply("Usage: `/ban [ID] [reason]`", quote=True)
     
     try:
         user_id = int(message.command[1])
-        reason = " ".join(message.command[2:]) or "הפרת חוקים"
+        reason = " ".join(message.command[2:]) or "Rules violation"
         
         await db.ban_user(user_id, reason)
-        await message.reply(f"🚫 המשתמש `{user_id}` נחסם.\nסיבה: `{reason}`", quote=True)
+        await message.reply(f"🚫 User `{user_id}` banned.\nReason: `{reason}`", quote=True)
     except Exception as e:
-        await message.reply(f"שגיאה: {e}", quote=True)
+        await message.reply(f"Error: {e}", quote=True)
 
 @Client.on_message(filters.command("unban") & filters.user(ADMINS))
 async def unban_user_cmd(client, message):
     if len(message.command) < 2:
-        return await message.reply("שימוש: `/unban [ID]`", quote=True)
+        return await message.reply("Usage: `/unban [ID]`", quote=True)
     
     try:
         user_id = int(message.command[1])
         await db.unban_user(user_id)
-        await message.reply(f"✅ המשתמש `{user_id}` שוחרר מהחסימה.", quote=True)
+        await message.reply(f"✅ User `{user_id}` unbanned.", quote=True)
     except:
-        await message.reply("שגיאה בביצוע הפקודה.", quote=True)
+        await message.reply("Error executing command.", quote=True)
 
 @Client.on_message(filters.command("ban_chat") & filters.user(ADMINS))
 async def ban_chat_cmd(client, message):
     if len(message.command) < 2:
-        return await message.reply("שימוש: `/ban_chat [ID] [סיבה]`", quote=True)
+        return await message.reply("Usage: `/ban_chat [ID] [reason]`", quote=True)
     
     try:
         chat_id = int(message.command[1])
-        reason = " ".join(message.command[2:]) or "הפרת חוקים"
+        reason = " ".join(message.command[2:]) or "Rules violation"
         
         await db.ban_chat(chat_id, reason)
-        await message.reply(f"🚫 הקבוצה `{chat_id}` נחסמה.\nסיבה: `{reason}`", quote=True)
+        await message.reply(f"🚫 Group `{chat_id}` banned.\nReason: `{reason}`", quote=True)
         
         try:
-            await client.send_message(chat_id, f"🚫 **קבוצה זו נחסמה.**\nסיבה: {reason}\nביי!")
+            await client.send_message(chat_id, f"🚫 **This group has been banned.**\nReason: {reason}\nBye!")
             await client.leave_chat(chat_id)
         except: pass
         
     except Exception as e:
-        await message.reply(f"שגיאה: {e}", quote=True)
+        await message.reply(f"Error: {e}", quote=True)
 
 @Client.on_message(filters.command("unban_chat") & filters.user(ADMINS))
 async def unban_chat_cmd(client, message):
     if len(message.command) < 2:
-        return await message.reply("שימוש: `/unban_chat [ID]`", quote=True)
+        return await message.reply("Usage: `/unban_chat [ID]`", quote=True)
     
     try:
         chat_id = int(message.command[1])
         await db.unban_chat(chat_id)
-        await message.reply(f"✅ הקבוצה `{chat_id}` שוחררה מהחסימה.", quote=True)
+        await message.reply(f"✅ Group `{chat_id}` unbanned.", quote=True)
     except:
-        await message.reply("שגיאה.", quote=True)
+        await message.reply("Error.", quote=True)
 
 @Client.on_message(filters.command("leave") & filters.user(ADMINS))
 async def leave_chat_cmd(client, message):
     if len(message.command) < 2:
-        return await message.reply("שימוש: `/leave [ID]`", quote=True)
+        return await message.reply("Usage: `/leave [ID]`", quote=True)
     
     try:
         chat_id = int(message.command[1])
-        await client.send_message(chat_id, "👋 **מנהל הבוט הורה לי לעזוב את הקבוצה. להתראות!**")
+        await client.send_message(chat_id, "👋 **The bot admin instructed me to leave the group. Goodbye!**")
         await client.leave_chat(chat_id)
-        await message.reply(f"✅ עזבתי את הקבוצה `{chat_id}`.", quote=True)
+        await message.reply(f"✅ Left group `{chat_id}`.", quote=True)
     except Exception as e:
-        await message.reply(f"שגיאה: {e}", quote=True)
+        await message.reply(f"Error: {e}", quote=True)
