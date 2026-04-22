@@ -22,9 +22,9 @@ async def tts_handler(client, message):
     elif len(message.command) > 1:
         text = message.text.split(maxsplit=1)[1]
     else:
-        return await message.reply("⚠️ **שימוש שגוי.**\nתגיב `/tts` על הודעה או כתוב טקסט ליד הפקודה.", quote=True)
+        return await message.reply("⚠️ **Incorrect usage.**\nReply `/tts` to a message or write text after the command.", quote=True)
 
-    status = await message.reply("🎧 **מעבד סאונד...**", quote=True)
+    status = await message.reply("🎧 **Processing audio...**", quote=True)
 
     try:
         loop = asyncio.get_running_loop()
@@ -34,4 +34,4 @@ async def tts_handler(client, message):
         await status.delete()
         
     except Exception as e:
-        await status.edit(f"❌ שגיאה: `{e}`")
+        await status.edit(f"❌ Error: `{e}`")
