@@ -21,13 +21,13 @@ async def inline_search(client: Client, query: InlineQuery):
         results.append(
             InlineQueryResultArticle(
                 id=str(uuid.uuid4()),
-                title="🔍 חפש סרטים וסדרות",
-                description="הקלד שם של סרט או סדרה כדי לחפש",
+                title="🔍 Search Movies and Series",
+                description="Type a movie or series name to search",
                 input_message_content=InputTextMessageContent(
-                    "**כדי להשתמש בחיפוש האינליין, פשוט לחץ על הכפתור וכתוב את שם הסרט/סדרה שאתה רוצה.**"
+                    "**To use inline search, simply click the button and type the movie/series name you want.**"
                 ),
                 reply_markup=InlineKeyboardMarkup([
-                    [InlineKeyboardButton("🔎 לחץ כאן לחיפוש", switch_inline_query_current_chat="")]
+                    [InlineKeyboardButton("🔎 Click here to search", switch_inline_query_current_chat="")]
                 ]),
                 thumb_url=PHOTO_URL
             )
@@ -41,11 +41,11 @@ async def inline_search(client: Client, query: InlineQuery):
         results.append(
             InlineQueryResultArticle(
                 id=str(uuid.uuid4()),
-                title="לא נמצאו תוצאות",
-                description=f"לא נמצאו קבצים עבור: {string}",
-                input_message_content=InputTextMessageContent(f"**לא נמצאו תוצאות עבור: {string}**"),
+                title="No results found",
+                description=f"No files found for: {string}",
+                input_message_content=InputTextMessageContent(f"**No results found for: {string}**"),
                 reply_markup=InlineKeyboardMarkup([
-                    [InlineKeyboardButton("🔎 נסה חיפוש אחר", switch_inline_query_current_chat="")]
+                    [InlineKeyboardButton("🔎 Try another search", switch_inline_query_current_chat="")]
                 ]),
                 thumb_url="https://cdn-icons-png.flaticon.com/512/2748/2748614.png"
             )
@@ -62,9 +62,9 @@ async def inline_search(client: Client, query: InlineQuery):
             else:
                 size_text = f"{f_size / (1024 * 1024):.2f} MB"
 
-            caption = f"**{f_name}**\n💾 **גודל:** {size_text}"
+            caption = f"**{f_name}**\n💾 **Size:** {size_text}"
             reply_markup = InlineKeyboardMarkup([
-                [InlineKeyboardButton("🔎 חפש שוב", switch_inline_query_current_chat=string)]
+                [InlineKeyboardButton("🔎 Search again", switch_inline_query_current_chat=string)]
             ])
 
             if file_type == 'video':
@@ -73,7 +73,7 @@ async def inline_search(client: Client, query: InlineQuery):
                         id=str(uuid.uuid4()),
                         video_file_id=file_id,
                         title=f"🎬 {f_name}",
-                        description=f"💾 גודל: {size_text}",
+                        description=f"💾 Size: {size_text}",
                         caption=caption,
                         reply_markup=reply_markup
                     )
@@ -84,11 +84,10 @@ async def inline_search(client: Client, query: InlineQuery):
                         id=str(uuid.uuid4()),
                         document_file_id=file_id,
                         title=f"📁 {f_name}",
-                        description=f"💾 גודל: {size_text}",
+                        description=f"💾 Size: {size_text}",
                         caption=caption,
                         reply_markup=reply_markup
                     )
                 )
 
     await query.answer(results, cache_time=1)
-
