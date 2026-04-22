@@ -7,3 +7,4 @@ requests
 gTTS
 yt-dlp
 langdetect
+aiofiles
