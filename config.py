@@ -14,9 +14,9 @@ DB_NAME = "TjBotDB"
 ADMINS = [int(x) for x in os.environ.get("ADMINS", "").replace(",", " ").split()]
 
 LOG_CHANNEL = int(os.environ.get("LOG_CHANNEL", "0"))
-UPDATE_CHANNEL = "searchgram_bots"
-REQUEST_GROUP = "https://t.me/searchgram_group"
+UPDATE_CHANNEL = "TJ_Bots"
+REQUEST_GROUP = "https://t.me/TJ_Bots_Chat"
 
-PHOTO_URL = "https://i.ibb.co/BK2j0c7p/x.jpg"
+PHOTO_URL = "https://i.ibb.co/v6b10BjN/03f383b6faeb.jpg"
 
 AUTH_CHANNEL_FORCE = os.environ.get("AUTH_CHANNEL_FORCE", "False").lower() == "true"
