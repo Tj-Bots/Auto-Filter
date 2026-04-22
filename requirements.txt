@@ -6,3 +6,4 @@ dnspython
 requests
 gTTS
 yt-dlp
+langdetect
