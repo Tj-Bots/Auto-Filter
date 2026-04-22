@@ -12,16 +12,16 @@ async def share_text_handler(client, message):
         text_to_share = message.text.split(None, 1)[1]
 
     if not text_to_share:
-        return await message.reply_text("❌ אנא הגב על הודעת טקסט או כתוב טקסט לאחר הפקודה.", quote=True)
+        return await message.reply_text("❌ Please reply to a text message or write text after the command.", quote=True)
 
     encoded_text = quote(text_to_share)
     share_link = f"https://t.me/share/url?url={encoded_text}"
 
     await message.reply_text(
-        f"**הנה קישור השיתוף שלך:**\n\n`{share_link}`",
+        f"**Here is your share link:**\n\n`{share_link}`",
         reply_markup=InlineKeyboardMarkup([
-            [InlineKeyboardButton("📤 שתף עכשיו", url=share_link)],
-            [InlineKeyboardButton("❌ סגור", callback_data="closea")]
+            [InlineKeyboardButton("📤 Share Now", url=share_link)],
+            [InlineKeyboardButton("❌ Close", callback_data="closea")]
         ]),
         quote=True,
         disable_web_page_preview=True
