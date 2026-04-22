@@ -14,10 +14,10 @@ async def index_handler(client, message):
     args = message.text.split(maxsplit=1)
     if len(args) < 2:
         return await message.reply(
-            "⚠️ **שימוש שגוי.**\n\n"
-            "פרמטרים: `/index [קישור] - [התחלה אופציונלי]`\n\n"
-            "דוגמה 1 (עד הודעה 1000): `/index https://t.me/c/1234/1000`\n"
-            "דוגמה 2 (מ-500 עד 1000): `/index https://t.me/c/1234/1000 - 500`",
+            "⚠️ **Incorrect usage.**\n\n"
+            "Parameters: `/index [link] - [optional start]`\n\n"
+            "Example 1 (up to message 1000): `/index https://t.me/c/1234/1000`\n"
+            "Example 2 (from 500 to 1000): `/index https://t.me/c/1234/1000 - 500`",
             quote=True
         )
 
@@ -30,14 +30,14 @@ async def index_handler(client, message):
         parts = full_arg.split(" - ")
         link = parts[0].strip()
         try: start_id = int(parts[1].strip())
-        except: return await message.reply("❌ מספר התחלה לא תקין.", quote=True)
+        except: return await message.reply("❌ Invalid start number.", quote=True)
     else:
         link = full_arg.strip()
 
     regex = r"(?:https?://)?(?:t\.me|telegram\.me)/(?:c/)?([\w\d]+)/(\d+)"
     match = re.match(regex, link)
 
-    if not match: return await message.reply("❌ קישור לא תקין.", quote=True)
+    if not match: return await message.reply("❌ Invalid link.", quote=True)
 
     identifier = match.group(1)
     end_id = int(match.group(2))
@@ -49,15 +49,15 @@ async def index_handler(client, message):
         chat = await client.get_chat(chat_id)
         chat_id = chat.id
     except Exception as e:
-        return await message.reply(f"❌ לא מצליח לגשת לערוץ. וודא שאני מנהל שם.\nשגיאה: {e}", quote=True)
+        return await message.reply(f"❌ Cannot access channel. Make sure I am an admin there.\nError: {e}", quote=True)
 
     INDEX_STATUS[chat_id] = True
-    stop_btn = InlineKeyboardMarkup([[InlineKeyboardButton("🛑 עצור תהליך", callback_data=f"stop_idx_{chat_id}")]])
+    stop_btn = InlineKeyboardMarkup([[InlineKeyboardButton("🛑 Stop Process", callback_data=f"stop_idx_{chat_id}")]])
     
     status = await message.reply(
-        f"⏳ **מתחיל אינדקס...**\n"
-        f"ערוץ: `{chat.title}`\n"
-        f"טווח: `{start_id}` עד `{end_id}`",
+        f"⏳ **Starting index...**\n"
+        f"Channel: `{chat.title}`\n"
+        f"Range: `{start_id}` to `{end_id}`",
         reply_markup=stop_btn,
         quote=True
     )
@@ -70,7 +70,7 @@ async def index_handler(client, message):
 
     while current_id <= end_id:
         if not INDEX_STATUS.get(chat_id, False):
-            await status.edit("🛑 **האינדקס נעצר ידנית.**")
+            await status.edit("🛑 **Indexing stopped manually.**")
             return
 
         batch_end = min(current_id + batch_size, end_id + 1)
@@ -108,17 +108,17 @@ async def index_handler(client, message):
             try:
                 processed = min(current_id, end_id)
                 await status.edit(
-                    f"⏳ **שומר קבצים...**\n"
-                    f"📍 מעבד הודעה: `{processed}` / `{end_id}`\n\n"
-                    f"✅ נשמרו: `{total_saved}`\n"
-                    f"♻️ כפולים: `{total_dups}`",
+                    f"⏳ **Saving files...**\n"
+                    f"📍 Processing message: `{processed}` / `{end_id}`\n\n"
+                    f"✅ Saved: `{total_saved}`\n"
+                    f"♻️ Duplicates: `{total_dups}`",
                     reply_markup=stop_btn
                 )
                 last_update_time = time.time()
             except: pass
 
     INDEX_STATUS[chat_id] = False
-    await status.edit(f"✅ **האינדקס הושלם!**\n\n📂 סה'כ נשמרו: {total_saved}\n♻️ כפולים: {total_dups}")
+    await status.edit(f"✅ **Indexing completed!**\n\n📂 Total saved: {total_saved}\n♻️ Duplicates: {total_dups}")
 
 @Client.on_callback_query(filters.regex(r"^stop_idx_"))
 async def stop_index_callback(client, query):
@@ -128,20 +128,20 @@ async def stop_index_callback(client, query):
         
     if chat_id in INDEX_STATUS:
         INDEX_STATUS[chat_id] = False
-        await query.answer("🛑 עוצר...", show_alert=True)
-        await query.message.edit("🛑 **התהליך נעצר.**")
+        await query.answer("🛑 Stopping...", show_alert=True)
+        await query.message.edit("🛑 **Process stopped.**")
     else:
-        await query.answer("התהליך כבר הסתיים.", show_alert=True)
+        await query.answer("Process already finished.", show_alert=True)
 
 @Client.on_message(filters.command("newindex") & filters.user(ADMINS))
 async def new_channel_watch(client, message):
     if len(message.command) < 2:
-        return await message.reply("ℹ️ שלח איידי של ערוץ.\nדוגמה: `/newindex -100...`", quote=True)
+        return await message.reply("ℹ️ Send a channel ID.\nExample: `/newindex -100...`", quote=True)
     try:
         chat_id = int(message.command[1])
         await db.add_watched_channel(chat_id)
-        await message.reply(f"✅ הערוץ `{chat_id}` נוסף למעקב בהצלחה!", quote=True)
-    except Exception as e: await message.reply(f"❌ שגיאה: {e}", quote=True)
+        await message.reply(f"✅ Channel `{chat_id}` added to watchlist successfully!", quote=True)
+    except Exception as e: await message.reply(f"❌ Error: {e}", quote=True)
 
 @Client.on_message(filters.channel)
 async def live_watcher(client, message):
