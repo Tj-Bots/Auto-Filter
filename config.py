@@ -10,7 +10,7 @@ BOT_TOKEN = os.environ.get("BOT_TOKEN", "")
 MONGO_URI = os.environ.get("MONGO_URI", "")
 DB_NAME = "TjBotDB"
 
-# מנהלים: ניתן להוסיף כמה מנהלים מופרדים ברווח או פסיק
+# Admins: You can add multiple admins separated by spaces or commas
 ADMINS = [int(x) for x in os.environ.get("ADMINS", "").replace(",", " ").split()]
 
 LOG_CHANNEL = int(os.environ.get("LOG_CHANNEL", "0"))
