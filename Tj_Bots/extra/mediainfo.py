@@ -67,15 +67,15 @@ async def create_telegraph_page(title, content, client):
 @Client.on_message(filters.command("mediainfo"))
 async def mediainfo_handler(client, message):
     if not message.reply_to_message:
-        return await message.reply_text("❌ הגב על קובץ מדיה.", quote=True)
+        return await message.reply_text("❌ Reply to a media file.", quote=True)
     
     media = message.reply_to_message
     file_obj = media.video or media.document or media.audio
     
     if not file_obj:
-        return await message.reply_text("❌ אין מדיה מתאימה בהודעה.", quote=True)
+        return await message.reply_text("❌ No suitable media found in the message.", quote=True)
 
-    status = await message.reply_text("⏳ **מעבד נתונים...**", quote=True)
+    status = await message.reply_text("⏳ **Processing data...**", quote=True)
     
     file_path = f"mi_{media.id}_{secrets.token_hex(2)}.dat"
     
@@ -99,7 +99,7 @@ async def mediainfo_handler(client, message):
         output = stdout.decode().strip()
 
         if not output:
-            return await status.edit("❌ שגיאה בהפקת המידע (mediainfo לא מותקן או נכשל).")
+            return await status.edit("❌ Error extracting info (mediainfo not installed or failed).")
 
         file_name = getattr(file_obj, "file_name", "Unknown File")
         
@@ -114,7 +114,7 @@ async def mediainfo_handler(client, message):
         )
 
     except Exception as e:
-        await status.edit(f"❌ שגיאה: `{e}`")
+        await status.edit(f"❌ Error: `{e}`")
         
     finally:
         if os.path.exists(file_path):
