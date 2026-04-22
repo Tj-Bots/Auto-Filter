@@ -199,7 +199,7 @@ async def callback_handler(client, query: CallbackQuery):
     if data not in ["closea", "noop", "help_stats"]:
         try:
             await query.message.edit_media(InputMediaPhoto(PHOTO_URL, caption=""), reply_markup=None)
-            await asyncio.sleep(0.2)
+            await asyncio.sleep(0.1)
         except:
             pass
 
