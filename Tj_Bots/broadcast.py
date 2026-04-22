@@ -94,13 +94,6 @@ async def broadcast_users(client, message):
     # Broadcast completed
     percentage = 100
     await msg.edit(
-        f"╭── ˹ {mode_text.upper()} BROADCAST ˼ ──\n"
-        f"│\n"
-        f"├─ 🔄 Mode: {mode_text}\n"
-        f"├─ 📊 Progress: {percentage}%\n"
-        f"├─ ✅ Success: {count}\n"
-        f"├─ ❌ Failed: {failed}\n"
-        f"╰─ 👥 Total: {count + failed}\n\n"
         f"<blockquote>✅ **Broadcast completed!**\n📫 Sent to: {count}\n🚫 Failed: {failed}</blockquote>",
         reply_markup=None
     )
@@ -180,13 +173,6 @@ async def broadcast_groups(client, message):
                 pass
     
     await msg.edit(
-        "╭── ˹ GROUPS BROADCAST ˼ ──\n"
-        "│\n"
-        "├─ 🔄 Mode: Copy\n"
-        "├─ 📊 Progress: 100%\n"
-        f"├─ ✅ Success: {count}\n"
-        f"├─ ❌ Failed: {failed}\n"
-        f"╰─ 👥 Total: {count + failed}\n\n"
         f"<blockquote>✅ **Group broadcast completed!**\n📫 Sent to: {count}\n🚫 Failed: {failed}</blockquote>",
         reply_markup=None
     )
