@@ -35,14 +35,14 @@ async def style_buttons(c, m, cb=False):
         InlineKeyboardButton('H̆̈ă̈p̆̈p̆̈y̆̈', callback_data='style+happy'),
         InlineKeyboardButton('S̑̈ȃ̈d̑̈', callback_data='style+sad'),
         ],[
-        InlineKeyboardButton('הבא ➡️', callback_data="nxt")
+        InlineKeyboardButton('Next ➡️', callback_data="nxt")
     ]]
     if not cb:
         if ' ' in m.text:
             title = m.text.split(" ", 1)[1]
             await m.reply_text(title, reply_markup=InlineKeyboardMarkup(buttons), reply_to_message_id=m.id)                     
         else:
-            await m.reply_text(text="שלח את הפקודה עם טקסט. למשל:- `/font [text]`")    
+            await m.reply_text(text="Send the command with text.\nexample:- `/font [text]`")    
     else:
         await m.answer()
         await m.message.edit_reply_markup(InlineKeyboardMarkup(buttons))
@@ -76,7 +76,7 @@ async def nxt(c, m):
             InlineKeyboardButton('S̶t̶r̶i̶k̶e̶', callback_data='style+strike'),
             InlineKeyboardButton('F༙r༙o༙z༙e༙n༙', callback_data='style+frozen')
             ],[
-            InlineKeyboardButton('⬅️ הקודם', callback_data='nxt+0')
+            InlineKeyboardButton('⬅️ Previous', callback_data='nxt+0')
         ]]
         await m.answer()
         await m.message.edit_reply_markup(InlineKeyboardMarkup(buttons))
