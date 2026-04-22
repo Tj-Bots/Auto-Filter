@@ -137,7 +137,7 @@ def download_media_sync(url, unique_id):
                 if ext not in ['mp4', 'mkv', 'webm', 'mov']:
                     return None, "photo_detected", "photo_mode", None
             
-            description = info_dict.get('description') or info_dict.get('title') or "ללא תיאור"
+            description = info_dict.get('description') or info_dict.get('title') or "No description"
             return downloaded_file, description, info_dict.get('ext'), None
 
         except Exception as e:
@@ -146,25 +146,25 @@ def download_media_sync(url, unique_id):
 @Client.on_message(filters.command("d"))
 async def download_handler(client, message):
     if not yt_dlp:
-        return await message.reply("❌ **שגיאת מערכת:** הספרייה `yt-dlp` חסרה.", quote=True)
+        return await message.reply("❌ **System Error:** The `yt-dlp` library is missing.", quote=True)
 
     text_to_check = message.text.split(None, 1)[1] if len(message.command) > 1 else (message.reply_to_message.text or message.reply_to_message.caption or "") if message.reply_to_message else ""
     
     if not text_to_check:
-        return await message.reply("❌ **שגיאה: חסר קישור.**\nשלח `/d [קישור]` או הגב על הודעה.", quote=True)
+        return await message.reply("❌ **Error: Missing link.**\nSend `/d [link]` or reply to a message.", quote=True)
 
     url = extract_url(text_to_check)
     if not url:
-        return await message.reply("⚠️ לא נמצא קישור חוקי.", quote=True)
+        return await message.reply("⚠️ No valid link found.", quote=True)
 
     if "tiktok.com" not in url:
-        return await message.reply("⚠️ המערכת תומכת כרגע בהורדות מ-TikTok בלבד.", quote=True)
+        return await message.reply("⚠️ The system currently supports TikTok downloads only.", quote=True)
 
     full_url = await asyncio.get_event_loop().run_in_executor(None, get_full_url, url)
     if "/photo/" in full_url:
-        return await message.reply("⚠️ **נכון לעכשיו, הבוט תומך בהורדת סרטונים בלבד (לא תמונות).**", quote=True)
+        return await message.reply("⚠️ **Currently, the bot supports video downloads only (not photos).**", quote=True)
 
-    status_msg = await message.reply("📥 **מוריד מדיה...**", quote=True)
+    status_msg = await message.reply("📥 **Downloading media...**", quote=True)
     if not os.path.exists("downloads"): os.makedirs("downloads")
 
     unique_id = f"{message.chat.id}_{message.id}_{int(time.time())}"
@@ -174,34 +174,34 @@ async def download_handler(client, message):
         file_path, description, ext, _ = await loop.run_in_executor(None, download_media_sync, full_url, unique_id)
         
         if ext == "photo_mode":
-             await status_msg.edit("⚠️ **מצטער, הבוט מזהה שזה פוסט תמונות/אודיו ולא וידאו רגיל.**")
+             await status_msg.edit("⚠️ **Sorry, the bot detects this as a photo/audio post, not regular video.**")
              if file_path and os.path.exists(file_path): os.remove(file_path)
              return
 
         if ext == "error":
-            error_msg = str(description) if description else "שגיאה לא ידועה"
-            clean_error = "שגיאה לא ידועה"
-            if "HTTP Error 530" in error_msg or "rate-limit" in error_msg: clean_error = "TikTok חוסם את הבקשה. נסה שוב מאוחר יותר."
+            error_msg = str(description) if description else "Unknown error"
+            clean_error = "Unknown error"
+            if "HTTP Error 530" in error_msg or "rate-limit" in error_msg: clean_error = "TikTok is blocking the request. Please try again later."
             else: clean_error = error_msg[:200]
             
-            await status_msg.edit(f"❌ **ההורדה נכשלה:**\n`{clean_error}`")
+            await status_msg.edit(f"❌ **Download failed:**\n`{clean_error}`")
             return
 
         if not file_path or not os.path.exists(file_path):
-            await status_msg.edit("❌ ההורדה נכשלה (לא נמצא קובץ וידאו).")
+            await status_msg.edit("❌ Download failed (video file not found).")
             return
 
         if not file_path.lower().endswith(('.mp4', '.mkv', '.webm', '.mov')):
-             await status_msg.edit("⚠️ **הקובץ שירד אינו וידאו.**")
+             await status_msg.edit("⚠️ **The downloaded file is not a video.**")
              if os.path.exists(file_path): os.remove(file_path)
              return
 
-        await status_msg.edit("📤 **מעבד ומעלה...**")
+        await status_msg.edit("📤 **Processing and uploading...**")
         
         bot_first_name = client.me.first_name
         bot_link = f"https://t.me/{client.me.username}"
         if len(description) > 800: description = description[:797] + "..."
-        caption_text = f"**🎥תיאור: [{description}]({url})**\n\n**🤖 הועלה על ידי: [{bot_first_name}]({bot_link})**"
+        caption_text = f"**🎥 Description: [{description}]({url})**\n\n**🤖 Uploaded by: [{bot_first_name}]({bot_link})**"
         
         display_filename = f"uploaded_by_{client.me.username}.mp4"
         
@@ -214,7 +214,7 @@ async def download_handler(client, message):
         await client.send_video(
             message.chat.id, file_path, caption=caption_text, file_name=display_filename,
             thumb=thumb_path if thumb_path and os.path.exists(thumb_path) else None,
-            progress=progress, progress_args=(status_msg, start_time, "📤 **מעלה וידאו**", last_update_ref),
+            progress=progress, progress_args=(status_msg, start_time, "📤 **Uploading video**", last_update_ref),
             reply_to_message_id=message.reply_to_message.id if message.reply_to_message else message.id
         )
 
@@ -224,6 +224,6 @@ async def download_handler(client, message):
         if thumb_path and os.path.exists(thumb_path): os.remove(thumb_path)
 
     except Exception as e:
-        await status_msg.edit(f"❌ שגיאה בקוד: `{str(e)}`")
+        await status_msg.edit(f"❌ Code error: `{str(e)}`")
         if 'file_path' in locals() and file_path and os.path.exists(file_path):
             os.remove(file_path)
