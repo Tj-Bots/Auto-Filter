@@ -121,7 +121,7 @@ nano .env
 
 **הפעלת הבוט:**
 ```
-python3 bot.py
+python3 search_bot.py
 ```
 </details>
 
