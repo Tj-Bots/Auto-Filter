@@ -383,4 +383,6 @@ async def callback_handler(client, query: CallbackQuery):
             await query.message.delete()
             await query.message.reply_to_message.delete()
         except:
-         
+            pass 
+    elif data == "noop":
+        await query.answer()
