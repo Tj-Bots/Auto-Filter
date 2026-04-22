@@ -19,7 +19,7 @@ app = Client(
 )
 
 async def start_bot():
-    print("🤖 הבוט מתחיל לעבוד...")
+    print("🤖 Bot is waking up...")
     await app.start()
     await db.init_database(app)
     
@@ -29,7 +29,7 @@ async def start_bot():
                 content = f.read().split()
                 if len(content) == 2:
                     chat_id, msg_id = int(content[0]), int(content[1])
-                    await app.edit_message_text(chat_id, msg_id, "הבוט הופעל מחדש ✅")
+                    await app.edit_message_text(chat_id, msg_id, "Bot is back online! ✅")
             os.remove("restart.txt")
         except Exception as e:
             print(f"Error editing restart message: {e}")
@@ -38,11 +38,11 @@ async def start_bot():
         me = await app.get_me()
         await app.send_message(
             LOG_CHANNEL,
-            f"#BotStarted\n✅ **הבוט הופעל בהצלחה!**\n@{me.username}"
+            f"#BotStarted\n✅ **Bot is up and running!**\n@{me.username}"
         )
     except: pass
 
-    print("✅ הבוט מחובר! שלח הודעה כדי לבדוק.")
+    print("✅ Bot is online! Go test it out.")
     await idle()
     await app.stop()
 
